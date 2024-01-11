@@ -1,4 +1,4 @@
-#include "image.hpp"
+#include "include.hpp"
 
 #include <vector>
 #include <string>
@@ -6,23 +6,7 @@
 #include <fstream>
 #include <cstdio>
 #include <cassert>
-#include <filesystem>
 
-
-namespace img = image;
-namespace fs = std::filesystem;
-
-
-constexpr u64 N_ASCII_CHARS = 95;
-
-constexpr auto ROOT = "C:/D_Data/Repos/BitmapFont";
-
-
-const auto ROOT_DIR = fs::path(ROOT);
-
-
-const auto ASCII_IMAGE_PATH = ROOT_DIR / "png_in/ascii_v5.png";
-const auto CPP_OUT_PATH = ROOT_DIR / "cpp_out/code.cpp";
 
 
 static bool is_black(img::Pixel p)
@@ -75,7 +59,7 @@ static bool validate(img::Image const& raw_ascii)
 }
 
 
-std::vector<img::SubView> split_chars(img::Image const& raw_ascii)
+static std::vector<img::SubView> split_chars(img::Image const& raw_ascii)
 {
     auto view = img::make_view(raw_ascii);
 
@@ -120,7 +104,7 @@ std::vector<img::SubView> split_chars(img::Image const& raw_ascii)
 }
 
 
-std::string to_cpp_text(img::Image const& raw_ascii)
+static std::string to_cpp_text(img::Image const& raw_ascii)
 {
     auto list = split_chars(raw_ascii);    
 
@@ -183,7 +167,7 @@ std::string to_cpp_text(img::Image const& raw_ascii)
 }
 
 
-bool write_to_file(std::string const& str, cstr filename)
+static bool write_to_file(std::string const& str, cstr filename)
 {
     std::ofstream file(filename);
 
@@ -227,6 +211,8 @@ int main()
     }
     
     img::destroy_image(image);
+
+
 
     return 0;
 }
