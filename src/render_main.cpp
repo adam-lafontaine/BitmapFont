@@ -6,7 +6,7 @@
 
 static img::GrayView make_ascii_view(char c)
 {
-#include "../cpp_out/code.cpp";
+#include "../cpp_out/code.cpp"
 
     auto& ascii = ascii_chars;
 
@@ -23,7 +23,7 @@ static img::GrayView make_ascii_view(char c)
 
 static img::Pixel mask_char(u8 mask, img::Pixel p)
 {
-    return mask ? img::to_pixel(0, 0, 255) : p;
+    return (mask - '0') ? img::to_pixel(0, 0, 255) : p;
 }
 
 
@@ -77,6 +77,8 @@ int main()
     range.y_end = 40;
 
     render_text(text, img::sub_view(image, range));
+
+    img::write_image(image, RENDER_OUT_PATH.string().c_str());
 
     img::destroy_image(image);
 

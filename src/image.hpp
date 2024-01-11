@@ -112,7 +112,7 @@ namespace image
     {
         MatrixSubView2D<T> sub_view;
 
-		sub_view.matrix_data = image.data_;
+		sub_view.matrix_data_ = image.data_;
 		sub_view.matrix_width = image.width;
 		
 		sub_view.range = range;
