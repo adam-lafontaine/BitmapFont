@@ -152,7 +152,7 @@ static std::string to_cpp_text(img::Image const& raw_ascii)
             auto row = img::row_span(view, y);
             for (u32 x = 0; x < row.length; x++)
             {
-                oss << (row.begin[x].alpha ? 1 : 0);
+                oss << '\\' << (row.begin[x].alpha ? 1 : 0);
             }
         }
 
