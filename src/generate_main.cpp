@@ -6,15 +6,23 @@
 #include <fstream>
 #include <cstdio>
 #include <cassert>
+#include <filesystem>
 
 
 namespace img = image;
+namespace fs = std::filesystem;
 
 
 constexpr u64 N_ASCII_CHARS = 95;
 
+constexpr auto ROOT = "C:/D_Data/Repos/BitmapFont";
 
-constexpr auto ASCII_IMAGE_PATH = "todo/ascii_v5.png";
+
+const auto ROOT_DIR = fs::path(ROOT);
+
+
+const auto ASCII_IMAGE_PATH = ROOT_DIR / "png_in/ascii_v5.png";
+const auto CPP_OUT_PATH = ROOT_DIR / "cpp_out/code.cpp";
 
 
 static bool is_black(img::Pixel p)
@@ -196,7 +204,7 @@ bool write_to_file(std::string const& str, cstr filename)
 int main()
 {
     img::Image image;
-    if(!img::read_image_from_file(ASCII_IMAGE_PATH, image))
+    if(!img::read_image_from_file(ASCII_IMAGE_PATH.string().c_str(), image))
     {
         printf("Did not read image\n");
         return 1;
@@ -212,7 +220,7 @@ int main()
 
     auto const cpp_text = to_cpp_text(image);
 
-    if (!write_to_file(cpp_text, "./files/ascii_chars02.cpp"))
+    if (!write_to_file(cpp_text, CPP_OUT_PATH.string().c_str()))
     {
         printf("Did not write file\n");
         return 1;
