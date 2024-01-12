@@ -36,6 +36,8 @@ namespace image
 }
 
 
+/* make view */
+
 namespace image
 {
     ImageView make_view(Image const& image)
@@ -47,6 +49,38 @@ namespace image
         view.matrix_data_ = image.data_;
 
         return view;
+    }
+}
+
+
+/* transform */
+
+namespace image
+{
+    template <typename P_SRC, typename P_DST>
+    static void transform_span(SpanView<P_SRC> const& src, SpanView<P_DST> const& dst, fn<Pixel(P_SRC, P_DST)> const& func)
+    {
+        auto s = src.begin;
+        auto d = dst.begin;
+
+        for (u32 i = 0; i < src.length; i++)
+        {
+            d[i] = func(s[i], d[i]);
+        }
+    }
+
+
+    void transform(GraySubView const& src, SubView const& dst, fn<Pixel(u8, Pixel)> const& func)
+    {
+        assert(src.matrix_data_);
+        assert(dst.matrix_data_);
+        assert(dst.width == src.width);
+        assert(dst.height == src.height);
+
+        for (u32 y = 0; y < src.height; y++)
+        {
+            transform_span(row_span(src, y), row_span(dst, y), func);
+        }
     }
 }
 

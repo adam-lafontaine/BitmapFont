@@ -64,9 +64,4 @@ public:
 };
 
 
-
-
-using Rect2Di32 = Rect2D<i32>;
-using Rect2Df32 = Rect2D<f32>;
 using Rect2Du32 = Rect2D<u32>;
-using Rect2Df64 = Rect2D<f64>;

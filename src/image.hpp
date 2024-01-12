@@ -108,6 +108,23 @@ namespace image
 namespace image
 {
     template <typename T>
+    static MatrixSubView2D<T> sub_view(Matrix2D<T> const& image, Rect2Du32 const& range)
+    {
+        MatrixSubView2D<T> sub_view;
+
+		sub_view.matrix_data_ = image.data_;
+		sub_view.matrix_width = image.width;
+		
+		sub_view.range = range;
+
+		sub_view.width = range.x_end - range.x_begin;
+		sub_view.height = range.y_end - range.y_begin;
+
+		return sub_view;
+    }
+
+
+    template <typename T>
     static MatrixSubView2D<T> sub_view(MatrixView2D<T> const& view, Rect2Du32 const& range)
     {
         MatrixSubView2D<T> sub_view{};
@@ -120,6 +137,44 @@ namespace image
 
         return sub_view;
     }
+
+
+    template <typename T>
+    static MatrixSubView2D<T> sub_view(MatrixSubView2D<T> const& view, Rect2Du32 const& range)
+    {
+        MatrixSubView2D<T> sub_view{};
+
+        sub_view.matrix_data_ = view.matrix_data_;
+        sub_view.matrix_width = view.matrix_width;
+
+        sub_view.x_begin = range.x_begin + view.x_begin;
+		sub_view.x_end = range.x_end + view.x_begin;
+		sub_view.y_begin = range.y_begin + view.y_begin;
+		sub_view.y_end = range.y_end + view.y_begin;
+
+		sub_view.width = range.x_end - range.x_begin;
+		sub_view.height = range.y_end - range.y_begin;
+
+        return sub_view;
+    }
+}
+
+
+/* transform */
+
+namespace image
+{
+    void transform(GraySubView const& src, SubView const& dst, fn<Pixel(u8, Pixel)> const& func);
+}
+
+
+/* read write */
+
+namespace image
+{    
+    bool read_image_from_file(const char* img_path_src, Image& image_dst);
+
+    bool write_image(Image const& image_src, const char* img_path_dst);
 }
 
 
@@ -176,11 +231,18 @@ namespace image
 }
 
 
-/* read write */
+/* rect */
 
 namespace image
 {    
-    bool read_image_from_file(const char* img_path_src, Image& image_dst);
+    static inline Rect2Du32 make_range(u32 width, u32 height)
+    {
+        Rect2Du32 range{};
+        range.x_begin = 0;
+        range.x_end = width;
+        range.y_begin = 0;
+        range.y_end = height;
 
-    bool write_image(Image const& image_src, const char* img_path_dst);
+        return range;
+    }
 }
