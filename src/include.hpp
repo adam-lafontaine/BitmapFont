@@ -15,6 +15,6 @@ constexpr auto ROOT = "C:/D_Data/Repos/BitmapFont";
 
 const auto ROOT_DIR = fs::path(ROOT);
 
-const auto ASCII_IMAGE_PATH = ROOT_DIR / "png_in/ascii_v5.png";
+const auto ASCII_IMAGE_PATH = ROOT_DIR / "png_in/joystick_8.png";
 const auto CPP_OUT_PATH = ROOT_DIR / "cpp_out/code.cpp";
 const auto RENDER_OUT_PATH = ROOT_DIR / "png_out/text.png";
