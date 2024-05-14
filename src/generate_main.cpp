@@ -8,10 +8,25 @@
 #include <cassert>
 
 
+constexpr auto BLACK = img::to_pixel(0);
+constexpr auto TRANSPARENT = img::to_pixel(0, 0, 0, 0);
+
 
 static bool is_black(img::Pixel p)
 {
     return p.alpha > 0 && p.red == 0 && p.green == 0 && p.blue == 0;
+}
+
+
+static bool is_white(img::Pixel p)
+{
+    return p.alpha > 0 && p.red == 255 && p.green == 255 && p.blue == 255;
+}
+
+
+static bool is_gray(img::Pixel p)
+{
+    return p.alpha > 0 && p.red == p.green && p.red == p.blue;
 }
 
 
@@ -29,20 +44,24 @@ static void format_image(img::Image const& image)
     for (u32 i = 0; i < span.length; i++)
     {
         auto& p = span.begin[i];
-        if (!p.alpha)
+        if (!p.alpha || is_black(p))
         {
             continue;
         }
-
-        if (p.red == p.green && p.red == p.blue)
+        else if (is_white(p))
         {
-            p = img::to_pixel(0);
+            p = TRANSPARENT;
         }
+        else if (is_gray(p))
+        {
+            p = BLACK;
+        }
+       
     }
 }
 
 
-static bool validate(img::Image const& raw_ascii)
+static bool validate_v(img::Image const& raw_ascii)
 {
     auto view = img::make_view(raw_ascii);
     u32 count = 0;
@@ -59,7 +78,7 @@ static bool validate(img::Image const& raw_ascii)
 }
 
 
-static std::vector<img::SubView> split_chars(img::Image const& raw_ascii)
+static std::vector<img::SubView> split_chars_v(img::Image const& raw_ascii)
 {
     auto view = img::make_view(raw_ascii);
 
@@ -104,13 +123,67 @@ static std::vector<img::SubView> split_chars(img::Image const& raw_ascii)
 }
 
 
+static bool validate_h(img::Image const& raw_ascii)
+{
+    auto view = img::make_view(raw_ascii);
+    u32 count = 0;
+
+    auto row = img::row_span(view, 0);
+
+    printf("count: %u\n", count);
+
+    return count == N_ASCII_CHARS;
+}
+
+
+static std::vector<img::SubView> split_chars_h(img::Image const& raw_ascii)
+{
+    auto view = img::make_view(raw_ascii);
+
+    auto const w = view.width;
+    auto const h = view.height;
+
+    std::vector<img::SubView> list;
+
+    Rect2Du32 range{};
+    range.x_begin = 0;
+    range.x_end = view.width;
+    range.y_begin = 0;
+    range.y_end = h;    
+
+    int count = 0;
+
+    auto top_row = img::row_span(view, 0);
+    for (u32 x = 0; x < w; x++)
+    {
+        if (is_boundary(top_row.begin[x]) || x == w - 1)
+        {
+            if (x > range.x_begin)
+            {
+                range.x_end = x;
+                list.push_back(img::sub_view(view, range));
+            }
+
+            range.x_begin = x + 1;
+        }
+    }
+
+    assert(list.size() == N_ASCII_CHARS);
+
+    return list;
+}
+
+
 static std::string to_cpp_text(img::Image const& raw_ascii)
 {
-    auto list = split_chars(raw_ascii);    
+    auto list = split_chars_h(raw_ascii);    
 
     std::ostringstream oss;
 
     oss
+    << "/*** " 
+    << ASCII_IMAGE_PATH.filename()
+    << " ***/\n"
     << "static const struct\n"
     << "{\n"
     << "    unsigned char height;\n"
@@ -196,11 +269,11 @@ int main()
 
     format_image(image);
 
-    if (!validate(image))
+    /*if (!validate(image))
     {
         printf("Image not valid\n");
         return 1;
-    }
+    }*/
 
     auto const cpp_text = to_cpp_text(image);
 
