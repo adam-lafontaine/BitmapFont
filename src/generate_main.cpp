@@ -61,68 +61,6 @@ static void format_image(img::Image const& image)
 }
 
 
-static bool validate_v(img::Image const& raw_ascii)
-{
-    auto view = img::make_view(raw_ascii);
-    u32 count = 0;
-
-    for (u32 y = 0; y < view.height; y++)
-    {
-        auto row = img::row_span(view, y);
-        count += is_boundary(row.begin[0]);
-    }
-
-    printf("count: %u\n", count);
-
-    return count == N_ASCII_CHARS;
-}
-
-
-static std::vector<img::SubView> split_chars_v(img::Image const& raw_ascii)
-{
-    auto view = img::make_view(raw_ascii);
-
-    std::vector<img::SubView> list;
-
-    Rect2Du32 range{};
-    range.x_begin = 0;
-    range.y_begin = 0;
-    range.x_end = view.width;
-
-    int count = 0;
-
-    for (u32 y = 0; y < view.height; y++)
-    {
-        auto row = img::row_span(view, y);
-        if (!is_boundary(row.begin[0]))
-        {
-            range.x_end = view.width;
-            for (u32 x = 0; x < view.width; x++)
-            {
-                if (is_boundary(row.begin[x]))
-                {
-                    range.x_end = x;
-                    break;
-                }
-            }
-            continue;
-        }
-
-        count++;
-        printf("count: %u, y: %u\n", count, y);
-
-        range.y_end = y;
-
-        list.push_back(img::sub_view(view, range));
-        range.y_begin = y + 1;
-    }
-
-    assert(list.size() == N_ASCII_CHARS);
-
-    return list;
-}
-
-
 static bool validate_h(img::Image const& raw_ascii)
 {
     auto view = img::make_view(raw_ascii);
@@ -269,12 +207,6 @@ int main()
 
     format_image(image);
 
-    /*if (!validate(image))
-    {
-        printf("Image not valid\n");
-        return 1;
-    }*/
-
     auto const cpp_text = to_cpp_text(image);
 
     if (!write_to_file(cpp_text, CPP_OUT_PATH.string().c_str()))
@@ -284,8 +216,6 @@ int main()
     }
     
     img::destroy_image(image);
-
-
 
     return 0;
 }
