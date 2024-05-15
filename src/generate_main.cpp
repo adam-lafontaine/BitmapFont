@@ -112,7 +112,7 @@ static std::vector<img::SubView> split_chars_h(img::Image const& raw_ascii)
 }
 
 
-static std::string to_cpp_text(img::Image const& raw_ascii)
+static std::string to_cpp_text(img::Image const& raw_ascii, fs::path const& dst_file)
 {
     auto list = split_chars_h(raw_ascii);    
 
@@ -120,7 +120,7 @@ static std::string to_cpp_text(img::Image const& raw_ascii)
 
     oss
     << "/*** " 
-    << ASCII_IMAGE_PATH.filename()
+    << dst_file.filename()
     << " ***/\n"
     << "static const struct\n"
     << "{\n"
@@ -178,9 +178,9 @@ static std::string to_cpp_text(img::Image const& raw_ascii)
 }
 
 
-static bool write_to_file(std::string const& str, cstr filename)
+static bool write_to_file(std::string const& str, fs::path const& dst_file)
 {
-    std::ofstream file(filename);
+    std::ofstream file(dst_file);
 
     if (!file.is_open())
     {
@@ -199,23 +199,31 @@ static bool write_to_file(std::string const& str, cstr filename)
 int main()
 {
     img::Image image;
-    if(!img::read_image_from_file(ASCII_IMAGE_PATH.string().c_str(), image))
+
+    for (auto in_file : ASCII_IMAGE_FILES)
     {
-        printf("Did not read image\n");
-        return 1;
+        auto src_path = (ASCII_IMAGE_DIR / in_file);
+        if (!img::read_image_from_file(src_path.string().c_str(), image))
+        {
+            printf("Did not read image\n");
+            return 1;
+        }
+
+        auto dst_path = CPP_OUT_DIR / in_file;
+        dst_path.replace_extension(".cpp");
+
+        format_image(image);
+
+        auto const cpp_text = to_cpp_text(image, dst_path.filename());
+
+        if (!write_to_file(cpp_text, dst_path))
+        {
+            printf("Did not write file\n");
+            return 1;
+        }
+
+        img::destroy_image(image);
     }
-
-    format_image(image);
-
-    auto const cpp_text = to_cpp_text(image);
-
-    if (!write_to_file(cpp_text, CPP_OUT_PATH.string().c_str()))
-    {
-        printf("Did not write file\n");
-        return 1;
-    }
-    
-    img::destroy_image(image);
 
     return 0;
 }

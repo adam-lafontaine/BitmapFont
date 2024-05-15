@@ -1,4 +1,4 @@
-/*** "pixiloid_sans_h8.png" ***/
+/*** "pixiloid_sans_8.cpp" ***/
 static const struct
 {
     unsigned char height;

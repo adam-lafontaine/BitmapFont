@@ -1,4 +1,4 @@
-/*** "ascii_h8.png" ***/
+/*** "ascii_8.cpp" ***/
 static const struct
 {
     unsigned char height;

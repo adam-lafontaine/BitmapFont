@@ -6,7 +6,7 @@
 
 static img::GrayView make_ascii_view(char c)
 {
-#include "../cpp_out/code.cpp"
+#include "../cpp_out/ascii_5.cpp"
 
     auto& ascii = ascii_chars;
 
