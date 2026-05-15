@@ -1,4 +1,4 @@
-#include "include.hpp"
+#include "../../libs/include.hpp"
 
 #include <cstring>
 #include <cassert>
@@ -6,7 +6,8 @@
 
 static img::GrayView make_ascii_view(char c)
 {
-#include "../cpp_out/joystick_8.cpp"
+//#include "../../files/cpp_out/joystick_8.cpp"
+#include "../../files/cpp_out/punk_run_14.cpp"
 
     auto& ascii = ascii_chars;
 
@@ -61,7 +62,7 @@ static void render_text(cstr text, img::SubView const& dst)
 int main()
 {
     auto const text = "The quick brown fox jumps over the lazy dog";
-    u32 width = 500;
+    u32 width = 1000;
     u32 height = 50;
 
     img::Image image;
@@ -72,7 +73,7 @@ int main()
 
     Rect2Du32 range{};
     range.x_begin = 10;
-    range.x_end = 490;
+    range.x_end = width - 10;
     range.y_begin = 10;
     range.y_end = 40;
 
@@ -84,3 +85,6 @@ int main()
 
     return 0;
 }
+
+
+#include "../../libs/libs_o.cpp"
