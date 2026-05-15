@@ -227,3 +227,6 @@ int main()
 
     return 0;
 }
+
+
+#include "../../libs/libs_o.cpp"
