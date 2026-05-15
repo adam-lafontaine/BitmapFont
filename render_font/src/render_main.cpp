@@ -1,4 +1,4 @@
-#include "include.hpp"
+#include "../../libs/include.hpp"
 
 #include <cstring>
 #include <cassert>
@@ -6,7 +6,7 @@
 
 static img::GrayView make_ascii_view(char c)
 {
-#include "../cpp_out/joystick_8.cpp"
+#include "../../files/cpp_out/joystick_8.cpp"
 
     auto& ascii = ascii_chars;
 

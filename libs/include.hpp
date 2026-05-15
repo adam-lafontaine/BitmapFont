@@ -16,9 +16,11 @@ constexpr auto ROOT = "C:/D_Data/Repos/BitmapFont";
 
 const auto ROOT_DIR = fs::path(ROOT);
 
-const auto ASCII_IMAGE_DIR = ROOT_DIR / "png_in";
-const auto CPP_OUT_DIR = ROOT_DIR / "cpp_out";
-const auto RENDER_OUT_PATH = ROOT_DIR / "png_out/text.png";
+const auto FILES_DIR = ROOT_DIR / "files";
+
+const auto ASCII_IMAGE_DIR = FILES_DIR / "png_in";
+const auto CPP_OUT_DIR = FILES_DIR / "cpp_out";
+const auto RENDER_OUT_PATH = FILES_DIR / "png_out/text.png";
 
 std::array<const char*, 5> ASCII_IMAGE_FILES = {
     "ascii_5.png",
