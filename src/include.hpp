@@ -20,9 +20,10 @@ const auto ASCII_IMAGE_DIR = ROOT_DIR / "png_in";
 const auto CPP_OUT_DIR = ROOT_DIR / "cpp_out";
 const auto RENDER_OUT_PATH = ROOT_DIR / "png_out/text.png";
 
-std::array<const char*, 4> ASCII_IMAGE_FILES = {
+std::array<const char*, 5> ASCII_IMAGE_FILES = {
     "ascii_5.png",
     "ascii_8.png",
     "joystick_8.png",
-    "pixiloid_sans_8.png"
+    "pixiloid_sans_8.png",
+    "punk_run_14.png"
 };
